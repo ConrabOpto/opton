@@ -2,8 +2,14 @@ const { app, BrowserView, BrowserWindow } = require('electron');
 const { getDeepLinkUrl, isValidBaseUrl, isValidDeepLinkUrl } = require('./utils/url');
 const { createUserSettings } = require('./utils/createUserSettings');
 const { startServer, sendUrlAsync } = require('./utils/ipc');
+const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 const prompt = require('electron-prompt');
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+
+log.info('App starting...');
 
 let win;
 let view;
@@ -112,7 +118,10 @@ function createView(baseUrl) {
     });
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+    autoUpdater.checkForUpdatesAndNotify();
+    createWindow();
+});
 
 app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar
