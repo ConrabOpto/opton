@@ -14,6 +14,9 @@
             <img src="icon.png" width="16px" height="16px" alt="Conrab Opto" />
           </div>
           <div id="window-controls">
+            <div class="button" id="settings-button">
+              <span>&#xE713;</span>
+            </div>
             <div class="button" id="min-button">
               <span>&#xE921;</span>
             </div>
@@ -29,6 +32,33 @@
           </div>
         </div>
       </header>
+      <div id="settings">
+          <h3>
+            Lägg till en ny endpoint
+          </h3>
+        <div id="settings-container">
+          <form>
+            <div class="form-group">
+              <label for="Name">Namn</label>
+              <input type="text" name="Name" />
+            </div>
+            <div class="form-group">
+              <label for="Url">Url</label>
+              <input type="text" name="Url" />
+            </div>
+            <div class="form-group checkbox">
+              <label class="default">
+                <input type="checkbox" /> Use as default
+              </label>
+            </div>
+            <div><button>Lägg till</button></div>
+          </form>
+        </div>
+        <div id="settings-copyright">
+            <div>© Conrab Opto AB</div>
+            <div><a href="http://www.conrab.se" target="_blank">www.conrab.se</a></div>
+        </div>
+      </div>
     </div>
     <script type="text/javascript" src="renderer.js"></script>
   </body>

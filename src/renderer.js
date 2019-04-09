@@ -1,11 +1,16 @@
-const { remote } = require('electron');
+const { remote, ipcRenderer } = require('electron');
+
+let optoIsVisible = false;
 
 function init() {
+    ipcRenderer.send('show-opto');
+
     const window = remote.getCurrentWindow();
-    const minButton = document.getElementById('min-button');
-    const maxButton = document.getElementById('max-button');
-    const restoreButton = document.getElementById('restore-button');
     const closeButton = document.getElementById('close-button');
+    const maxButton = document.getElementById('max-button');
+    const minButton = document.getElementById('min-button');
+    const restoreButton = document.getElementById('restore-button');
+    const settingsButton = document.getElementById('settings-button');
 
     const toggle = maximized => {
         maxButton.style.display = maximized ? 'none' : 'flex';
@@ -24,6 +29,9 @@ function init() {
     onClicking(maxButton, x => x.maximize());
     onClicking(restoreButton, x => x.unmaximize());
     onClicking(closeButton, x => x.close());
+    onClicking(settingsButton, x => {
+        ipcRenderer.send(optoIsVisible ? 'hide-opto' : 'show-opto');
+    });
 
     toggle(window.isMaximized());
 }
@@ -33,3 +41,13 @@ document.onreadystatechange = () => {
         init();
     }
 };
+
+ipcRenderer.on('show-opto', () => {
+    console.log('opto was shown');
+    optoIsVisible = true;
+});
+
+ipcRenderer.on('hide-opto', () => {
+    console.log('opto was hidden');
+    optoIsVisible = false;
+});

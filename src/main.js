@@ -1,4 +1,4 @@
-const { app, BrowserView, BrowserWindow } = require('electron');
+const { app, BrowserView, BrowserWindow, ipcMain } = require('electron');
 const { getDeepLinkUrl, isValidBaseUrl, isValidDeepLinkUrl } = require('./utils/url');
 const { createUserSettings } = require('./utils/createUserSettings');
 const { startServer, sendUrlAsync } = require('./utils/ipc');
@@ -93,9 +93,15 @@ function createView(baseUrl) {
     });
 
     win.setBrowserView(view);
+    win.webContents.openDevTools({
+        mode: 'detach'
+    });
     view.setBounds({ x: 1, y: 22, width: 1278, height: 777 });
     view.setAutoResize({ width: true, height: true });
     view.webContents.loadURL(getDeepLinkUrl(baseUrl) || baseUrl);
+    view.webContents.openDevTools({
+        mode: 'detach'
+    });
 
     win.on('maximize', () => {
         const bounds = win.getBounds();
@@ -117,6 +123,23 @@ function createView(baseUrl) {
         });
     });
 }
+
+ipcMain.on('hide-opto', (event, arg) => {
+    win.setBrowserView(null);
+    event.sender.send('hide-opto', arg);
+});
+
+ipcMain.on('show-opto', (event, arg) => {
+    const bounds = win.getBounds();
+    win.setBrowserView(view);
+    view.setBounds({
+        x: 1,
+        y: 22,
+        width: bounds.width - (win.isMaximized() ? 16 : 2),
+        height: bounds.height - 23
+    });
+    event.sender.send('show-opto', arg);
+});
 
 app.on('ready', () => {
     autoUpdater.checkForUpdatesAndNotify();
